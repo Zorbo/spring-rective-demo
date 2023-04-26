@@ -16,42 +16,25 @@ spring.datasource.password=Pass1234
 A szolgáltatás működéséhez az alábbi adatbázis struktúra létrehozására van szükség
 
 ```sql
-CREATE
-DATABASE rxjava;
+CREATE DATABASE rxjava;
 
 CREATE TABLE IF NOT EXISTS financial_transaction
 (
-    transaction_id char
-(
-    36
-) PRIMARY KEY,
-    previous_transaction_id char
-(
-    36
-) NULL,
-    data bytea NOT NULL
-    );
+    transaction_id          char(36) PRIMARY KEY,
+    previous_transaction_id char(36) NULL,
+    data                    bytea    NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS archive_financial_transaction
 (
-    account_statement_id CHAR
-(
-    36
-) NOT NULL,
-    transaction_id CHAR
-(
-    36
-) NOT NULL,
-    transaction_number INT NOT NULL,
-    compressed_data bytea NOT NULL,
-    signature bytea NOT NULL,
+    account_statement_id CHAR(36) NOT NULL,
+    transaction_id       CHAR(36) NOT NULL,
+    transaction_number   INT      NOT NULL,
+    compressed_data      bytea    NOT NULL,
+    signature            bytea    NOT NULL,
     CONSTRAINT PK_ArchiveFinancialTransaction
-    PRIMARY KEY
-(
-    account_statement_id,
-    transaction_id
-)
-    );
+        PRIMARY KEY (account_statement_id, transaction_id)
+);
 
 CREATE UNIQUE INDEX archive_financial_transaction_transaction_id_key
     ON archive_financial_transaction (transaction_id);
