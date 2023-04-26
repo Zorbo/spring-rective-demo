@@ -1,0 +1,99 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Acount Service
+servers:
+  - url: http://localhost:8080/api/v1/account-service
+paths:
+  /accounts/statements/{accountStatementId}:
+    get:
+      summary: Query statment by id.
+      operationId: getAccountStatement
+      tags:
+        - Statements
+      parameters:
+        - name: accountStatementId
+          in: path
+          description: UUID of account statement
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: A paged array of pets
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAccountStatementResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /accounts/statements:
+    post:
+      summary: Create account statement from the last specified transaction
+      operationId: createAccountStatement
+      tags:
+        - Statements
+      requestBody:
+        description: Request for account statement creation
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PostAccountStatementRequest'
+      responses:
+        '201':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostAccountStatementResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    GetAccountStatementResponse:
+      type: object
+      required:
+        - accountStatementId
+      properties:
+        accountStatementId:
+          type: string
+          format: uuid
+          description: UUID of account statement
+    PostAccountStatementRequest:
+      type: object
+      required:
+        - lastTransactionId
+      properties:
+        lastTransactionId:
+          type: string
+          format: uuid
+          description: UUID of last transaction
+    PostAccountStatementResponse:
+      type: object
+      required:
+        - accountStatementId
+      properties:
+        accountStatementId:
+          type: string
+          format: uuid
+          description: UUID of account statement
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
